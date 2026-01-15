@@ -76,8 +76,6 @@ private: // constructor and desctructor
    ~CUDT();
 
 public: //API
-   static void set_ext_ptr(UDTSOCKET u, void *ext_ptr);
-   static void *get_ext_ptr(UDTSOCKET u);
    static int startup();
    static int cleanup();
    static UDTSOCKET socket(int af, int type = SOCK_STREAM, int protocol = 0);

@@ -108,15 +108,7 @@ CUDT::CUDT()
    m_Linger.l_onoff = 1;
    m_Linger.l_linger = 180;
    m_iUDPSndBufSize = 65536;
-#ifdef OSX
-   m_iUDPRcvBufSize = 3500000;
-#elseif __OpenBSD__
-   m_iUDPRcvBufSize = 65536;
-#elseif __FreeBSD__
-   m_iUDPRcvBufSize = 65536;
-#else
    m_iUDPRcvBufSize = m_iRcvBufSize * m_iMSS;
-#endif
    m_iSockType = UDT_STREAM;
    m_iIPversion = AF_INET;
    m_bRendezvous = false;
@@ -597,7 +589,7 @@ void CUDT::connect(const sockaddr* serv_addr)
    // RendezevousQueue is used to temporarily store incoming handshake, non-rendezvous connections also require this function
    uint64_t ttl = 3000000;
    if (m_bRendezvous)
-      ttl *= 2;
+      ttl *= 10;
    ttl += CTimer::getTime();
    m_pRcvQueue->registerConnector(m_SocketID, this, m_iIPversion, serv_addr, ttl);
 
@@ -2595,8 +2587,7 @@ void CUDT::checkTimers()
    {
       // Haven't receive any information from the peer, is it dead?!
       // timeout: at least 16 expirations and must be greater than 10 seconds
-	//printf("m_iEXPCount: %d :: %lld :: %lld :: %d\n", m_iEXPCount, currtime - m_ullLastRspTime, 3200000 * m_ullCPUFrequency, (currtime - m_ullLastRspTime > 3200000 * m_ullCPUFrequency));
-      if ((m_iEXPCount > 5) && (currtime - m_ullLastRspTime > 3200000 * m_ullCPUFrequency))
+      if ((m_iEXPCount > 16) && (currtime - m_ullLastRspTime > 5000000 * m_ullCPUFrequency))
       {
          //
          // Connection is broken. 

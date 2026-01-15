@@ -83,7 +83,6 @@ public:
    unsigned int m_uiBackLog;                 // maximum number of connections in queue
 
    int m_iMuxID;                             // multiplexer ID
-   void *ext_ptr;
 
    pthread_mutex_t m_ControlLock;            // lock this socket exclusively for control APIs: bind/listen/connect
 
@@ -104,9 +103,6 @@ public:
    ~CUDTUnited();
 
 public:
-
-    void set_ext_ptr(const UDTSOCKET u, void *ext_ptr);
-    void *get_ext_ptr(const UDTSOCKET u);
 
       // Functionality:
       //    initialize the UDT library.
